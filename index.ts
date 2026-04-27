@@ -3,6 +3,9 @@ import { emptyPluginConfigSchema } from "openclaw/plugin-sdk";
 
 import { qqbotPlugin } from "./src/channel.js";
 import { setQQBotRuntime } from "./src/runtime.js";
+import { registerKnowledgeHooks, createKnowledgeAddTool,
+  createKnowledgeQueryTool, createKnowledgeUpdateTool,
+  createKnowledgeDeleteTool } from "@partme.ai/openclaw-knowledge";
 import { registerChannelTool } from "./src/tools/channel.js";
 import { registerRemindTool } from "./src/tools/remind.js";
 
@@ -16,6 +19,13 @@ const plugin = {
     api.registerChannel({ plugin: qqbotPlugin as any });
     registerChannelTool(api);
     registerRemindTool(api);
+
+    // 注册知识库 RAG hooks（纯加法，不改动原有逻辑）
+    registerKnowledgeHooks(api, "channels.qqbot.knowledge");
+
+    // 注册知识库工具（add + query）
+    api.registerTool(createKnowledgeAddTool);
+    api.registerTool(createKnowledgeQueryTool);
   },
 };
 
